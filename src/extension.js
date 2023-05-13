@@ -243,6 +243,21 @@ const getCurrentMemoryUsage = () => {
     return currentMemoryUsage;
 };
 
+const getCurrentGpuUsage = () => {
+    let currentGpuUsage = 0;
+
+    try {
+        const inputFile = Gio.File.new_for_path('/sys/class/drm/card0/device/gpu_busy_percent');
+        const [, content] = inputFile.load_contents(null);
+        const contentStr = ByteArray.toString(content).trim();
+
+        currentGpuUsage = contentStr / 100;
+    } catch (e) {
+        logError(e);
+    }
+    return currentGpuUsage;
+};
+
 const formatNetSpeedWithUnit = (amount) => {
     let unitIndex = 0;
     while (amount >= 1000 && unitIndex < netSpeedUnits.length - 1) {
@@ -285,6 +300,7 @@ const toDisplayString = (
     memoryUsage,
     netSpeed,
     swapUsage,
+    gpuUsage,
 ) => {
     const displayItems = [];
     if (enable.isCpuUsageEnable && cpuUsage !== null) {
@@ -304,6 +320,11 @@ const toDisplayString = (
     if (enable.isSwapUsageEnable && swapUsage !== null) {
         displayItems.push(
             `${texts.swapUsageText} ${formatUsageVal(swapUsage, showExtraSpaces, showPercentSign)}`,
+        );
+    }
+    if (enable.isGpuUsageEnable && gpuUsage !== null) {
+        displayItems.push(
+            `${texts.gpuUsageText} ${formatUsageVal(gpuUsage, showExtraSpaces, showPercentSign)}`,
         );
     }
     if (enable.isDownloadSpeedEnable && netSpeed !== null) {
@@ -383,6 +404,7 @@ class Extension {
             downloadSpeedText: this._prefs.DOWNLOAD_SPEED_TEXT.get(),
             uploadSpeedText: this._prefs.UPLOAD_SPEED_TEXT.get(),
             swapUsageText: this._prefs.SWAP_USAGE_TEXT.get(),
+            gpuUsageText: this._prefs.GPU_USAGE_TEXT.get(),
             itemSeparator: this._prefs.ITEM_SEPARATOR.get(),
         };
 
@@ -392,6 +414,7 @@ class Extension {
             isDownloadSpeedEnable: this._prefs.IS_DOWNLOAD_SPEED_ENABLE.get(),
             isUploadSpeedEnable: this._prefs.IS_UPLOAD_SPEED_ENABLE.get(),
             isSwapUsageEnable: this._prefs.IS_SWAP_USAGE_ENABLE.get(),
+            isGpuUsageEnable: this._prefs.IS_GPU_USAGE_ENABLE.get(),
         };
 
         this._showExtraSpaces = this._prefs.SHOW_EXTRA_SPACES.get();
@@ -444,6 +467,7 @@ class Extension {
         let currentMemoryUsage = null;
         let currentNetSpeed = null;
         let currentSwapUsage = null;
+        let currentGpuUsage = null;
         if (this._enable.isCpuUsageEnable) {
             currentCPUUsage = getCurrentCPUUsage();
         }
@@ -456,6 +480,9 @@ class Extension {
         if (this._enable.isSwapUsageEnable) {
             currentSwapUsage = getCurrentSwapUsage();
         }
+        if (this._enable.isGpuUsageEnable) {
+            currentGpuUsage = getCurrentGpuUsage();
+        }
 
         const displayText = toDisplayString(
             this._showExtraSpaces,
@@ -466,6 +493,7 @@ class Extension {
             currentMemoryUsage,
             currentNetSpeed,
             currentSwapUsage,
+            currentGpuUsage,
         );
         this._indicator.setText(displayText);
         return GLib.SOURCE_CONTINUE;

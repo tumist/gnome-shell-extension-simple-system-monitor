@@ -26,6 +26,8 @@ const DEFAULT_SETTINGS = {
     textColor: '#DDDDDD',
     isSwapUsageEnable: false,
     swapUsageText: 'S',
+    isGpuUsageEnable: true,
+    gpuUsageText: 'G',
 };
 
 const WIDGET_TEMPLATE_FILE = Gtk.get_major_version() === 3 ? 'prefs_gtk3.ui' : 'prefs.ui';
@@ -88,6 +90,8 @@ const SimpleSystemMonitorPrefsWidget = GObject.registerClass(
             'text_color',
             'swap_usage_enable_switch',
             'swap_usage_text',
+            'gpu_usage_enable_switch',
+            'gpu_usage_text',
         ],
     },
     class SimpleSystemMonitorPrefsWidget extends Gtk.Box {
@@ -125,6 +129,8 @@ const SimpleSystemMonitorPrefsWidget = GObject.registerClass(
             );
             this._swap_usage_enable_switch.set_active(Configuration.IS_SWAP_USAGE_ENABLE.get());
             this._swap_usage_text.set_text(Configuration.SWAP_USAGE_TEXT.get());
+            this._gpu_usage_enable_switch.set_active(Configuration.IS_GPU_USAGE_ENABLE.get());
+            this._gpu_usage_text.set_text(Configuration.GPU_USAGE_TEXT.get());
             const color = new Gdk.RGBA();
             color.parse(Configuration.TEXT_COLOR.get());
             this._text_color.set_rgba(color);
@@ -151,6 +157,8 @@ const SimpleSystemMonitorPrefsWidget = GObject.registerClass(
             Configuration.TEXT_COLOR.set(DEFAULT_SETTINGS.textColor);
             Configuration.IS_SWAP_USAGE_ENABLE.set(DEFAULT_SETTINGS.isSwapUsageEnable);
             Configuration.SWAP_USAGE_TEXT.set(DEFAULT_SETTINGS.swapUsageText);
+            Configuration.IS_GPU_USAGE_ENABLE.set(DEFAULT_SETTINGS.isGpuUsageEnable);
+            Configuration.GPU_USAGE_TEXT.set(DEFAULT_SETTINGS.gpuUsageText);
         }
 
         color_changed(widget) {
@@ -226,6 +234,14 @@ const SimpleSystemMonitorPrefsWidget = GObject.registerClass(
 
         upload_usage_text_changed(widget) {
             Configuration.UPLOAD_SPEED_TEXT.set(widget.get_text());
+        }
+
+        gpu_usage_enable_switch_changed(widget) {
+            Configuration.IS_GPU_USAGE_ENABLE.set(widget.get_active());
+        }
+
+        gpu_usage_text_changed(widget) {
+            Configuration.GPU_USAGE_TEXT.set(widget.get_text());
         }
 
         item_separator_changed(widget) {

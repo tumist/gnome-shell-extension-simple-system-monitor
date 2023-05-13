@@ -101,5 +101,15 @@
       <summary>Swap Usage Text</summary>
       <description>Swap Usage Text</description>
     </key>
+    <key type="b" name="is-gpu-usage-enable">
+      <default>false</default>
+      <summary>Show GPU Usage</summary>
+      <description>Show GPU Usage</description>
+    </key>
+    <key type="s" name="gpu-usage-text">
+      <default>'G'</default>
+      <summary>GPU Usage Text</summary>
+      <description>GPU Usage Text</description>
+    </key>
   </schema>
 </schemalist>

@@ -26,7 +26,7 @@ const DEFAULT_SETTINGS = {
     textColor: '#DDDDDD',
     isSwapUsageEnable: false,
     swapUsageText: 'S',
-    isGpuUsageEnable: true,
+    isGpuUsageEnable: false,
     gpuUsageText: 'G',
 };
 

@@ -528,6 +528,9 @@ class Extension {
             this._enable.isSwapUsageEnable = this._prefs.IS_SWAP_USAGE_ENABLE.get();
         });
 
+        this._prefs.IS_GPU_USAGE_ENABLE.changed(() => {
+            this._enable.isGpuUsageEnable = this._prefs.IS_GPU_USAGE_ENABLE.get();
+        });
         this._prefs.CPU_USAGE_TEXT.changed(() => {
             this._texts.cpuUsageText = this._prefs.CPU_USAGE_TEXT.get();
         });
@@ -546,6 +549,10 @@ class Extension {
 
         this._prefs.SWAP_USAGE_TEXT.changed(() => {
             this._texts.swapUsageText = this._prefs.SWAP_USAGE_TEXT.get();
+        });
+
+        this._prefs.GPU_USAGE_TEXT.changed(() => {
+            this._texts.gpuUsageText = this._prefs.GPU_USAGE_TEXT.get();
         });
 
         this._prefs.ITEM_SEPARATOR.changed(() => {
@@ -589,6 +596,8 @@ class Extension {
         this._prefs.FONT_WEIGHT.disconnect();
         this._prefs.IS_SWAP_USAGE_ENABLE.disconnect();
         this._prefs.SWAP_USAGE_TEXT.disconnect();
+        this._prefs.IS_GPU_USAGE_ENABLE.disconnect();
+        this._prefs.GPU_USAGE_TEXT.disconnect();
     }
 }
 
